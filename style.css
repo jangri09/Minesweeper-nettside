@@ -14,12 +14,18 @@
     margin-bottom: 10px;
 }
 
-.grid div {
+div {
     font-size: 25px;
     text-align: center;
     font-family: 'Roboto', sans-serif;
+
+}
+
+.valid,
+.bomb {
     width: 40px;
     height: 40px;
-    border: 1px solid #ff0000;
+    border: 5px solid;
+    border-color: #f5f3eb #bab7a9 #bab7a9 #fff9db;
     box-sizing: border-box;
 }
