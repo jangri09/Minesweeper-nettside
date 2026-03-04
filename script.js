@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const flagsLeft = document.querySelector('#flags-left')
     const width = 10
     let bombAmount = 20
-
+    let squares = []
 
 
     //Create Board
@@ -23,8 +23,20 @@ document.addEventListener('DOMContentLoaded', function () {
             grid.appendChild(square)
             squares.push(square)
 
+            //normal click
+            square.addEventListener('click', function () {
+                click(square)
+            })
 
+            //ctrl and left click
+            square.addEventListener('click', function () {
+                //addFlag(square)
+            })
         }
     }
     createBoard()
+
+    function click(square) {
+        console.log(square)
+    }
 })
