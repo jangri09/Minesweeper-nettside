@@ -29,3 +29,10 @@ div {
     border-color: #f5f3eb #bab7a9 #bab7a9 #fff9db;
     box-sizing: border-box;
 }
+
+.checked {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #9c998d;
+    box-sizing: border-box;
+}

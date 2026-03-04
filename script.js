@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const grid = document.querySelector('.grid')
     const flagsLeft = document.querySelector('#flags-left')
+    const result = document.querySelector('#result')
     const width = 10
     let bombAmount = 20
     let squares = []
+    let isGameOver = false
 
 
     //Create Board
@@ -57,5 +59,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function click(square) {
         console.log(square)
+        if (isGameOver || square.classList.contains('checked') || square.classList.contains('flag')) return
+
+        if (square.classList.contains('bomb')) {
+            gameOver()
+        }
+
+        function gameOver() {
+            result.innerHTML = 'BOOM! Game Over!'
+            isGameOver = true
+
+            //show all the bombs
+            squares.forEach(function (square) {
+                if (square.classList.contains('bomb')) {
+                    square.innerHTML = '💣'
+                    square.classList.remove('bomb')
+                    square.classList.add('checked')
+                }
+            })
+        }
     }
 })
