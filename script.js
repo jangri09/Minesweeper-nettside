@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const grid = document.querySelector('.grid')
     const flagsLeft = document.querySelector('#flags-left')
     const result = document.querySelector('#result')
+    const resetButton = document.querySelector('#reset')
     const width = 10
     let bombAmount = 20
     let squares = []
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             let total = square.getAttribute('data')
             if (total != 0) {
+                square.classList.add('checked')
                 if (total == 1) square.classList.add('one')
                 if (total == 2) square.classList.add('two')
                 if (total == 3) square.classList.add('three')
@@ -165,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function gameOver() {
         result.innerHTML = 'BOOM! Game Over!'
         isGameOver = true
+        document.querySelector('#reset').style.display = 'block'
 
         //show all the bombs
         squares.forEach(function (square) {
@@ -175,4 +178,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
     }
+
+    //try again
+    function resetBoard() {
+        document.querySelector('#reset').style.display = 'none'
+        grid.innerHTML = ''
+        squares = []
+        flags = 0
+        isGameOver = false
+        result.innerHTML = ''
+        createBoard()
+    }
+
+    resetButton.addEventListener('click', resetBoard)
 })
