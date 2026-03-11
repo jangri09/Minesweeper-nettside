@@ -8,22 +8,20 @@ document.addEventListener('DOMContentLoaded', function () {
     let squares = []
     let isGameOver = false
     let flags = 0
+    //laget av Ai
+    let firstClick = true
 
 
-    //Create Board
+    //Create Board (no bombs yet - placed on first click)
     function createBoard() {
         flagsLeft.innerHTML = bombAmount
-        //get random bombs
-        const bombsArray = Array(bombAmount).fill('bomb')
-        const emptyArray = Array(width * width - bombAmount).fill('valid')
-        const gameArray = emptyArray.concat(bombsArray)
-        const shuffledArray = gameArray.sort(() => Math.random() - 0.5)
+        firstClick = true
 
-        //create squares
+        //create squares (all valid for now)
         for (let i = 0; i < width * width; i++) {
             const square = document.createElement('div')
             square.id = i
-            square.classList.add(shuffledArray[i])
+            square.classList.add('valid')
             grid.appendChild(square)
             squares.push(square)
 
@@ -37,6 +35,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault()
                 addFlag(square)
             })
+        }
+    }
+
+    //Place bombs after first click, avoiding the clicked square and its neighbours
+    function placeBombs(safeSquare) {
+        const safeId = parseInt(safeSquare.id)
+        const isLeftEdge = (safeId % width === 0)
+        const isRightEdge = (safeId % width === width - 1)
+
+        //collect safe IDs: the clicked square + all its neighbours
+        const safeIds = new Set([
+            safeId,
+            !isLeftEdge ? safeId - 1 : null,           // venstre
+            !isRightEdge ? safeId + 1 : null,          // høyre
+            safeId - width,                             // over
+            safeId + width,                             // under
+            !isLeftEdge ? safeId - width - 1 : null,   // øvre venstre
+            !isRightEdge ? safeId - width + 1 : null,  // øvre høyre
+            !isLeftEdge ? safeId + width - 1 : null,   // nedre venstre
+            !isRightEdge ? safeId + width + 1 : null,  // nedre høyre
+        ].filter(id => id !== null && id >= 0 && id < width * width))
+
+        const available = squares.filter(s => !safeIds.has(parseInt(s.id)))
+        const shuffled = available.sort(() => Math.random() - 0.5)
+
+        for (let i = 0; i < bombAmount; i++) {
+            shuffled[i].classList.remove('valid')
+            shuffled[i].classList.add('bomb')
         }
 
         //add numbers
@@ -82,6 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function click(square) {
         console.log(square)
         if (isGameOver || square.classList.contains('checked') || square.classList.contains('flag')) return
+
+        //place bombs on first click, guaranteeing this square is safe
+        if (firstClick) {
+            placeBombs(square)
+            firstClick = false
+        }
 
         if (square.classList.contains('bomb')) {
             gameOver()
@@ -187,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
         squares = []
         flags = 0
         isGameOver = false
+        firstClick = true
         result.innerHTML = ''
         createBoard()
     }
