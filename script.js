@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (square.classList.contains('bomb')) {
             gameOver()
+            return
         } else {
             let total = square.getAttribute('data')
             if (total != 0) {
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 bestTime = timeElapsed
                 localStorage.setItem('minesweeperBestTime', bestTime)
                 bestTimeDisplay.innerHTML = bestTime
-                result.innerHTML += ' New Best Time!'
+                result.innerHTML += '<br>New Best Time!'
             }
 
             document.querySelector('#reset').style.display = 'block'
@@ -224,21 +225,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function gameOver() {
-        result.innerHTML = 'BOOM! Game Over!'
+        result.innerHTML = 'BOOM!<br>Game Over!'
         isGameOver = true
         clearInterval(timerId)
         document.querySelector('#reset').style.display = 'block'
 
-        //show all the bombs
+        let delayCounter = 0; //AI
+
         squares.forEach(function (square) {
             if (square.classList.contains('bomb') && !square.classList.contains('flag')) {
-                square.innerHTML = '💣'
-                square.classList.remove('bomb')
-                square.classList.add('checked')
+                setTimeout(() => {
+                    square.innerHTML = '💣'
+                    square.classList.remove('bomb')
+                    square.classList.add('checked')
+                }, delayCounter * 50)
+                delayCounter++
             }
             if (!square.classList.contains('bomb') && square.classList.contains('flag')) {
-                square.innerHTML = '❌'
-                square.classList.remove('flag')
+                setTimeout(() => {
+                    square.innerHTML = '❌'
+                    square.classList.remove('flag')
+                }, delayCounter * 50)
+                delayCounter++
             }
         })
     }
