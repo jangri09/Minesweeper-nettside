@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const flagsLeft = document.querySelector('#flags-left')
     const result = document.querySelector('#result')
     const resetButton = document.querySelector('#reset')
+    const timerDisplay = document.querySelector('#timer')
+    const bestTimeDisplay = document.querySelector('#best-time')
     const width = 10
     let bombAmount = 20
     let squares = []
@@ -10,6 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
     let flags = 0
     //laget av Ai
     let firstClick = true
+    let timeElapsed = 0
+    let timerId
+    
+    // Last inn beste tid fra lagring når siden laster
+    let bestTime = localStorage.getItem('minesweeperBestTime')
+    if (bestTime) {
+        bestTimeDisplay.innerHTML = bestTime
+    }
 
 
     //Create Board (no bombs yet - placed on first click)
@@ -113,6 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (firstClick) {
             placeBombs(square)
             firstClick = false
+            
+            // start timer
+            timerId = setInterval(() => {
+                timeElapsed++
+                timerDisplay.innerHTML = timeElapsed
+            }, 1000)
         }
 
         if (square.classList.contains('bomb')) {
@@ -193,6 +209,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (matches === bombAmount) {
             result.innerHTML = 'You win!'
             isGameOver = true
+            clearInterval(timerId)
+            
+            // Sjekk om dette var ny rekord
+            if (!bestTime || timeElapsed < parseInt(bestTime)) {
+                bestTime = timeElapsed
+                localStorage.setItem('minesweeperBestTime', bestTime)
+                bestTimeDisplay.innerHTML = bestTime
+                result.innerHTML += ' New Best Time!'
+            }
+            
             document.querySelector('#reset').style.display = 'block'
         }
     }
@@ -200,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function gameOver() {
         result.innerHTML = 'BOOM! Game Over!'
         isGameOver = true
+        clearInterval(timerId)
         document.querySelector('#reset').style.display = 'block'
 
         //show all the bombs
@@ -220,6 +247,12 @@ document.addEventListener('DOMContentLoaded', function () {
         flags = 0
         isGameOver = false
         firstClick = true
+        
+        // reset timer
+        clearInterval(timerId)
+        timeElapsed = 0
+        timerDisplay.innerHTML = timeElapsed
+        
         result.innerHTML = ''
         createBoard()
     }

@@ -9,6 +9,15 @@ body {
 
 #reset {
     display: none;
+    margin: 10px auto;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+    margin: 0 auto;
+    font-size: 20px;
 }
 
 .container {
