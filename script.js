@@ -99,14 +99,14 @@ document.addEventListener('DOMContentLoaded', function () {
     //add flags
     function addFlag(square) {
         if (isGameOver) return
-        if (!square.classList.contains('checked') && (flags < bombAmount)) {
-            if (!square.classList.contains('flag')) {
+        if (!square.classList.contains('checked')) {
+            if (!square.classList.contains('flag') && (flags < bombAmount)) {
                 square.classList.add('flag')
                 flags++
                 square.innerHTML = '🚩'
                 flagsLeft.innerHTML = bombAmount - flags
                 checkForWin()
-            } else {
+            } else if (square.classList.contains('flag')) {
                 square.classList.remove('flag')
                 square.innerHTML = ''
                 flags--
