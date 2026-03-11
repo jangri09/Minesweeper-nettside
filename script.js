@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (matches === bombAmount) {
             result.innerHTML = 'You win!'
             isGameOver = true
+            document.querySelector('#reset').style.display = 'block'
         }
     }
 
