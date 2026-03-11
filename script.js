@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (square.classList.contains('bomb')) {
+            square.style.backgroundColor = 'red'
             gameOver()
             return
         } else {
