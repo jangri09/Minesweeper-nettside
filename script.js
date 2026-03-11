@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let firstClick = true
     let timeElapsed = 0
     let timerId
-    
+
     // Last inn beste tid fra lagring når siden laster
     let bestTime = localStorage.getItem('minesweeperBestTime')
     if (bestTime) {
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (firstClick) {
             placeBombs(square)
             firstClick = false
-            
+
             // start timer
             timerId = setInterval(() => {
                 timeElapsed++
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
             result.innerHTML = 'You win!'
             isGameOver = true
             clearInterval(timerId)
-            
+
             // Sjekk om dette var ny rekord
             if (!bestTime || timeElapsed < parseInt(bestTime)) {
                 bestTime = timeElapsed
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 bestTimeDisplay.innerHTML = bestTime
                 result.innerHTML += ' New Best Time!'
             }
-            
+
             document.querySelector('#reset').style.display = 'block'
         }
     }
@@ -231,10 +231,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //show all the bombs
         squares.forEach(function (square) {
-            if (square.classList.contains('bomb')) {
+            if (square.classList.contains('bomb') && !square.classList.contains('flag')) {
                 square.innerHTML = '💣'
                 square.classList.remove('bomb')
                 square.classList.add('checked')
+            }
+            if (!square.classList.contains('bomb') && square.classList.contains('flag')) {
+                square.innerHTML = '❌'
+                square.classList.remove('flag')
             }
         })
     }
@@ -247,12 +251,12 @@ document.addEventListener('DOMContentLoaded', function () {
         flags = 0
         isGameOver = false
         firstClick = true
-        
+
         // reset timer
         clearInterval(timerId)
         timeElapsed = 0
         timerDisplay.innerHTML = timeElapsed
-        
+
         result.innerHTML = ''
         createBoard()
     }
