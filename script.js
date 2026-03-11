@@ -63,20 +63,82 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (square.classList.contains('bomb')) {
             gameOver()
+        } else {
+            let total = square.getAttribute('data')
+            if (total != 0) {
+                if (total == 1) square.classList.add('one')
+                if (total == 2) square.classList.add('two')
+                if (total == 3) square.classList.add('three')
+                if (total == 4) square.classList.add('four')
+                square.innerHTML = total
+
+            }
+            checkSquare(square)
         }
+        square.classList.add('checked')
 
-        function gameOver() {
-            result.innerHTML = 'BOOM! Game Over!'
-            isGameOver = true
+        //check neighbouring squares once square is clicked
+        function checkSquare(square) {
+            const currentId = square.id
+            const isLeftEdge = (square.id % width === 0)
+            const isRightEdge = (square.id % width === width - 1)
 
-            //show all the bombs
-            squares.forEach(function (square) {
-                if (square.classList.contains('bomb')) {
-                    square.innerHTML = '💣'
-                    square.classList.remove('bomb')
-                    square.classList.add('checked')
+            setTimeout(function () {
+                if (currentId > 0 && !isLeftEdge) {
+                    const newId = squares[currenId - 1].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
                 }
-            })
+                if (currentId > 9 && !isRightEdge) {
+                    const newId = squares[currenId + 1 - width].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+                if (currentId > 10) {
+                    const newId = squares[currenId - width].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+                if (currentId > 11 && !isLeftEdge) {
+                    const newId = squares[currenId - 1 - width].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+                if (currentId < 98 && !isRightEdge) {
+                    const newId = squares[currenId + 1].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+                if (currentId < 90 && !isLeftEdge) {
+                    const newId = squares[currenId - 1 + width].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+                if (currenId < 88 && !isRightEdge) {
+                    const newId = squares[currenId + 1 + width].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+                if (currenId < 89) {
+                    const newId = squares[currenId + width].id
+                    const newSquare = document.gwetElementById(newId)
+                    click(newSquare)
+                }
+            }, 10)
+
         }
+    }
+    function gameOver() {
+        result.innerHTML = 'BOOM! Game Over!'
+        isGameOver = true
+
+        //show all the bombs
+        squares.forEach(function (square) {
+            if (square.classList.contains('bomb')) {
+                square.innerHTML = '💣'
+                square.classList.remove('bomb')
+                square.classList.add('checked')
+            }
+        })
     }
 })
