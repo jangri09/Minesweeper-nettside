@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
             })
 
             //ctrl and left click
-            square.addEventListener('contextmenu', function () {
+            square.addEventListener('contextmenu', function (e) {
+                e.preventDefault()
                 addFlag(square)
             })
         }
@@ -71,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 square.classList.remove('flag')
                 square.innerHTML = ''
+                flags--
                 flagsLeft.innerHTML = bombAmount - flags
             }
         }
