@@ -188,11 +188,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (total == 3) square.classList.add('three')
                 if (total == 4) square.classList.add('four')
                 square.innerHTML = total
+                checkForWin()
                 return
             }
             checkSquare(square)
         }
         square.classList.add('checked')
+        checkForWin()
 
         //check neighbouring squares once square is clicked
         function checkSquare(square) {
@@ -246,18 +248,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function checkForWin() {
+        if (isGameOver) return
         let matches = 0
+        let checkedCount = 0
         for (let i = 0; i < squares.length; i++) {
             if (squares[i].classList.contains('flag') && squares[i].classList.contains('bomb')) {
                 matches++
             }
+            if (squares[i].classList.contains('checked')) {
+                checkedCount++
+            }
         }
-        if (matches === bombAmount) {
+        if (matches === bombAmount && checkedCount === squares.length - bombAmount) {
             result.innerHTML = 'You win!'
             isGameOver = true
             clearInterval(timerId)
 
-            // Sjekk om dette var ny rekord
+            // AI Sjekk om dette var ny rekord
             if (!bestTime || timeElapsed < parseInt(bestTime)) {
                 bestTime = timeElapsed
                 localStorage.setItem('minesweeperBestTime', bestTime)
