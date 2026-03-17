@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('contextmenu', e => e.preventDefault());
     const grid = document.querySelector('.grid')
     const flagsLeft = document.querySelector('#flags-left')
     const result = document.querySelector('#result')
@@ -22,12 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    //Create Board (no bombs yet - placed on first click)
+    //Create Board
     function createBoard() {
         flagsLeft.innerHTML = bombAmount
         firstClick = true
 
-        //create squares (all valid for now)
+        //create squares
         for (let i = 0; i < width * width; i++) {
             const square = document.createElement('div')
             square.id = i
@@ -48,13 +49,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    //Place bombs after first click, avoiding the clicked square and its neighbours
+    // Place bombs after first click, avoiding the clicked square and its neighbours
     function placeBombs(safeSquare) {
         const safeId = parseInt(safeSquare.id)
         const isLeftEdge = (safeId % width === 0)
         const isRightEdge = (safeId % width === width - 1)
 
-        //collect safe IDs: the clicked square + all its neighbours
+        //AI collect safe IDs: the clicked square + all its neighbours
         const safeIds = new Set([
             safeId,
             !isLeftEdge ? safeId - 1 : null,           // venstre
@@ -115,16 +116,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+
+    function chordSquare(square) {
+        const currentId = parseInt(square.id);
+        const isLeftEdge = (currentId % width === 0);
+        const isRightEdge = (currentId % width === width - 1);
+        let flagCount = 0;
+        // 1. Samle alle naborutene til ruten vi trykket på i en liste
+        const neighbors = [];
+        if (currentId > 0 && !isLeftEdge) neighbors.push(document.getElementById(currentId - 1));                   // venstre
+        if (currentId > 9 && !isRightEdge) neighbors.push(document.getElementById(currentId + 1 - width));          // øvre høyre
+        if (currentId > 9) neighbors.push(document.getElementById(currentId - width));                               // over
+        if (currentId > 10 && !isLeftEdge) neighbors.push(document.getElementById(currentId - 1 - width));          // øvre venstre
+        if (currentId < 99 && !isRightEdge) neighbors.push(document.getElementById(currentId + 1));                  // høyre
+        if (currentId < 90 && !isLeftEdge) neighbors.push(document.getElementById(currentId - 1 + width));          // nedre venstre
+        if (currentId < 89 && !isRightEdge) neighbors.push(document.getElementById(currentId + 1 + width));          // nedre høyre
+        if (currentId < 90) neighbors.push(document.getElementById(currentId + width));                              // under
+        // 2. Tell for alle rutene rundt: Hvor mange har et flagg?
+        for (let i = 0; i < neighbors.length; i++) {
+            if (neighbors[i] && neighbors[i].classList.contains('flag')) {
+                flagCount++;
+            }
+        }
+        // 3. Sjekk om antall flagg rundt oss er likt tallet vi står på!
+        let total = parseInt(square.getAttribute('data'));
+
+        if (flagCount === total) {
+            // Hvis det er likt, trykk på alle naborutene som IKKE har flagg eller er åpnet
+            for (let i = 0; i < neighbors.length; i++) {
+                if (neighbors[i] && !neighbors[i].classList.contains('checked') && !neighbors[i].classList.contains('flag')) {
+                    // Vi kaller den vanlige click()-funksjonen som om vi hadde trykket på nabofeltet med musen
+                    click(neighbors[i]);
+                }
+            }
+        }
+    }
     function click(square) {
         console.log(square)
-        if (isGameOver || square.classList.contains('checked') || square.classList.contains('flag')) return
+        if (isGameOver || square.classList.contains('flag')) return
 
-        //place bombs on first click, guaranteeing this square is safe
+        if (square.classList.contains('checked')) {
+            let total = parseInt(square.getAttribute('data'));
+            if (total > 0) {
+                chordSquare(square);
+            }
+            return;
+        }
+
         if (firstClick) {
             placeBombs(square)
             firstClick = false
 
-            // start timer
+
+            // AI start timer
             timerId = setInterval(() => {
                 timeElapsed++
                 timerDisplay.innerHTML = timeElapsed
