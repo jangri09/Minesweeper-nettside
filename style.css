@@ -5,6 +5,7 @@ body {
     margin: 0;
     padding-top: 40px;
     box-sizing: border-box;
+    background-color: #e1d7ca;
 }
 
 #reset {
@@ -17,6 +18,11 @@ body {
     justify-content: space-between;
     width: 400px;
     margin: 0 auto;
+    font-size: 20px;
+}
+
+.stats div {
+    font-family: 'Archivo Black', system-ui;
     font-size: 20px;
 }
 
@@ -54,6 +60,7 @@ div {
     cursor: default;
 }
 
+
 #result {
     position: absolute;
     top: 48px;
@@ -83,6 +90,12 @@ div {
     box-sizing: border-box;
 }
 
+
+.number {
+    font-family: "Bangers", system-ui;
+    padding-top: 5px;
+}
+
 .one {
     color: #e76346;
 }
@@ -97,4 +110,20 @@ div {
 
 .four {
     color: #bb41d3;
+}
+
+.five {
+    color: #cbdb1f;
+}
+
+.six {
+    color: #4328db;
+}
+
+.seven {
+    color: #e2880b;
+}
+
+.eight {
+    color: #6d267c;
 }
