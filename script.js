@@ -186,8 +186,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (square.classList.contains('bomb')) {
+            square.innerHTML = '<div>🔥</div>'
+            square.classList.add('checked', 'theBomb')
+            square.querySelector('div').animate(
+                [
+                    { transform: "scale(1)" },
+                    { transform: "scale(3)" },
+                    { transform: "scale(1)" },
+                ],
+                {
+                    duration: 350,
+                }
+            )
             square.style.backgroundColor = 'red'
-            gameOver()
+            setTimeout(() => {
+                gameOver()
+            }, 350)
             return
         } else {
             let total = square.getAttribute('data')
@@ -286,35 +300,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 result.innerHTML += '<br>New Best Time!'
             }
 
-            document.querySelector('#reset').style.display = 'block'
+            let resetBtn = document.querySelector('#reset');
+            resetBtn.style.display = 'flex';
+            resetBtn.animate([
+                { transform: "scale(0)", opacity: 0 },
+                { transform: "scale(1.1)", opacity: 1 },
+                { transform: "scale(1)", opacity: 1 }
+            ], { duration: 400, easing: "ease-out" });
         }
     }
 
     function gameOver() {
-        result.innerHTML = 'BOOM!<br>Game Over!'
-        isGameOver = true
-        clearInterval(timerId)
-        document.querySelector('#reset').style.display = 'block'
-
         let delayCounter = 0; //AI
 
         squares.forEach(function (square) {
             if (square.classList.contains('bomb') && !square.classList.contains('flag')) {
                 setTimeout(() => {
-                    square.innerHTML = '💣'
-                    square.classList.remove('bomb')
-                    square.classList.add('checked')
-                }, delayCounter * 50)
+                    if (square.classList.contains('theBomb')) {
+                        square.classList.remove('bomb')
+                        square.classList.add('checked')
+                    }
+                    else {
+                        square.innerHTML = '💣'
+                        square.classList.remove('bomb')
+                        square.classList.add('checked')
+                    }
+                }, delayCounter * 70)
                 delayCounter++
             }
             if (!square.classList.contains('bomb') && square.classList.contains('flag')) {
                 setTimeout(() => {
                     square.innerHTML = '❌'
                     square.classList.remove('flag')
-                }, delayCounter * 50)
+                }, delayCounter * 70)
                 delayCounter++
             }
         })
+        setTimeout(() => {
+            result.innerHTML = 'BOOM!<br>Game Over!'
+            isGameOver = true
+            clearInterval(timerId)
+            let resetBtn = document.querySelector('#reset');
+            resetBtn.style.display = 'flex';
+            resetBtn.animate([
+                { transform: "scale(0)", opacity: 0 },
+                { transform: "scale(1.1)", opacity: 1 },
+                { transform: "scale(1)", opacity: 1 }
+            ], { duration: 400, easing: "ease-out" });
+        }, delayCounter * 80)
     }
 
     //try again
@@ -334,6 +367,5 @@ document.addEventListener('DOMContentLoaded', function () {
         result.innerHTML = ''
         createBoard()
     }
-
     resetButton.addEventListener('click', resetBoard)
 })
